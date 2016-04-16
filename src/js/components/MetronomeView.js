@@ -5,33 +5,30 @@ import Metronome from '../tools/Metronome'
 export default class MetronomeView extends React.Component {
   constructor (props) {
     super(props)
-    this.state = { metronome: new Metronome(props.bpm) }
+    this._metronome = new Metronome(props.bpm)
+    this.state = { running: this._metronome.isRunning() }
     this.handleStart = this.handleStart.bind(this)
     this.handleStop = this.handleStop.bind(this)
     this.handleBpmChange = this.handleBpmChange.bind(this)
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
-    return nextState.metronome.isRunning() !== this.state.metronome.isRunning()
-  }
-
   handleStart () {
-    this.setState({ metronome: this.state.metronome.start() })
+    this.setState({ running: this._metronome.start().isRunning() })
   }
 
   handleStop () {
-    this.setState({ metronome: this.state.metronome.stop() })
+    this.setState({ running: this._metronome.stop().isRunning() })
   }
 
   handleBpmChange (event) {
-    this.setState({ metronome: this.state.metronome.setBpm(event.target.value) })
+    this._metronome.bpm = parseInt(event.target.value)
   }
 
   render () {
     return (
       <div className='metronome-container'>
         <div className='metronome-status'>
-          {this.state.metronome.isRunning() ? 'Running' : 'Stopped'}
+          {this._metronome.isRunning() ? 'Running' : 'Stopped'}
         </div>
         <div className='metronome-controls'>
           <input placeholder='BPM' onChange={this.handleBpmChange} />
@@ -42,3 +39,6 @@ export default class MetronomeView extends React.Component {
     )
   }
 }
+
+MetronomeView.propTypes = { bpm: React.PropTypes.number }
+MetronomeView.defaultTypes = { bpm: 0 }

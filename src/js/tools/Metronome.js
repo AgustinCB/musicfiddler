@@ -38,13 +38,6 @@ export default class Metronome {
     return Status['CLICKING'] === this._status
   }
 
-  // Setter that returns the object itself,
-  // Fancy modification to comfortable state update
-  setBpm (bpm) {
-    this.bpm = bpm
-    return this
-  }
-
   get bpm () {
     return this._bpm
   }
