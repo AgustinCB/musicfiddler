@@ -8,12 +8,13 @@ export const Status = utils.Enum({
 })
 
 export default class Metronome {
-  constructor (bpm) {
+  constructor (bpm, ontick) {
     this._bpm = bpm
     this._status = Status['STOPPED']
     this._audio = new Audio('/audio/tick.wav')
     this._audio.autoplay = false
     this._interval = -1
+    this._ontick = ontick
   }
 
   start () {
@@ -32,6 +33,7 @@ export default class Metronome {
 
   _click () {
     this._audio.play()
+    if (this._ontick) this._ontick()
   }
 
   isRunning () {
