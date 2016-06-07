@@ -5,7 +5,9 @@ import Metronome from '../tools/Metronome'
 export default class MetronomeView extends React.Component {
   constructor (props) {
     super(props)
-    this._metronome = new Metronome(props.bpm)
+    if (props.route) props = props.route
+    console.log(props)
+    this._metronome = new Metronome(props.bpm, props.note_context)
     this.state = { running: this._metronome.isRunning() }
     this.handleStart = this.handleStart.bind(this)
     this.handleStop = this.handleStop.bind(this)
@@ -27,13 +29,22 @@ export default class MetronomeView extends React.Component {
   render () {
     return (
       <div className='metronome-container'>
-        <div className='metronome-status'>
-          {this._metronome.isRunning() ? 'Running' : 'Stopped'}
+        <div className='metronome-bpms'>
+          {this._metronome.bpm}
+        </div>
+        <div className='metronome-bpm-selector'>
+          <div className='metronome-bpm-selector-control btn btn-theme'>
+          </div>
         </div>
         <div className='metronome-controls'>
+        </div>
+        <div className='metronome-status hidden'>
+          {this._metronome.isRunning() ? 'Running' : 'Stopped'}
+        </div>
+        <div className='metronome-controls hidden'>
           <input placeholder='BPM' onChange={this.handleBpmChange} />
-          <button onClick={this.handleStart}>Start</button>
-          <button onClick={this.handleStop}>Stop</button>
+          <button className='btn btn-theme' onClick={this.handleStart}>Start</button>
+          <button className='btn btn-theme' onClick={this.handleStop}>Stop</button>
         </div>
       </div>
     )

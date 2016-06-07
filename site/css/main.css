@@ -1,0 +1,29 @@
+#headerwrap {
+  height: 100% !important; }
+
+.tool-container {
+  padding-top: 5.5em; }
+
+.navbar {
+  height: 5em;
+  min-height: auto; }
+
+.metronome-container .metronome-bpm-selector {
+  height: 80%;
+  width: 1em;
+  background-color: blue;
+  display: inline-block;
+  position: absolute; }
+  .metronome-container .metronome-bpm-selector .metronome-bpm-selector-control {
+    position: absolute;
+    bottom: -1em;
+    left: -0.8em;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%; }
+
+.metronome-container .metronome-bpms {
+  display: inline-block; }
+
+.metronome-container .metronome-controls {
+  display: inline-block; }

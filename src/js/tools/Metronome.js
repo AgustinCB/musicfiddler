@@ -1,6 +1,7 @@
 'use strict'
 
 import * as utils from './utils'
+import * as music from './musicdata'
 
 export const Status = utils.Enum({
   'STOPPED': 0,
@@ -8,19 +9,32 @@ export const Status = utils.Enum({
 })
 
 export default class Metronome {
-  constructor (bpm, ontick) {
+  constructor (bpm, note_context, ontick) {
     this._bpm = bpm
+    if (this._bpm < 0) {
+      throw new Error('You can\'t use negative bpms')
+    }
     this._status = Status['STOPPED']
-    this._audio = new Audio('/audio/tick.wav')
-    this._audio.autoplay = false
     this._interval = -1
     this._ontick = ontick
+
+    this.note_context = note_context
+    this.note_node = this.note_context.createOscillator()
+    this.gain_node = this.note_context.createGain()
+
+    this.note_node.frequency.value = music.getNoteFrequency('E')
+    this.gain_node.gain.value = 0
+    this.note_node.connect(this.gain_node)
+    this.gain_node.connect(this.note_context.destination)
+    this.note_node.start()
   }
 
   start () {
-    if (Status['CLICKING'] === this._status) return
+    if (!(Status['CLICKING'] !== this._status && this._bpm && this._bpm > 0)) {
+      return this
+    }
     this._interval = 60 / this._bpm * 1000
-    this._clock = setInterval(this._click, this._interval)
+    this._clock = setInterval(this._click.bind(this), this._interval)
     this._status = Status['CLICKING']
     return this
   }
@@ -32,7 +46,10 @@ export default class Metronome {
   }
 
   _click () {
-    this._audio.play()
+    this.gain_node.gain.value = 3
+
+    setTimeout(() => { this.gain_node.gain.value = 0 }, 100)
+
     if (this._ontick) this._ontick()
   }
 
@@ -50,5 +67,10 @@ export default class Metronome {
       this.stop()
       this.start()
     }
+  }
+
+  close () {
+    this.note_node.stop()
+    return this
   }
 }
